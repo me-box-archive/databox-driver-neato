@@ -1,0 +1,34 @@
+{
+  "manifest-version": 1,
+
+  "name": "databox-driver-neato",
+  "version": "0.1.0",
+
+  "description": "A simple Databox driver for the botvac",
+  "author": "Anthony Brown <Anthony.Brown@nottingham.ac.uk> ()",
+  "license": "MIT",
+
+	"databox-type":"driver",
+
+  "tags": [
+    "neato",
+    "botvac",
+    "vacume"
+  ],
+
+  "homepage": "https://github.com/me-box/databox-driver-neato",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/me-box/databox-driver-neato.git"
+  },
+
+  "network-permissions": [
+  ],
+  
+  "hardware-permissions": [
+  ],
+
+  "resource-requirements": {
+    "store":"databox-store-blob"
+  }
+}
