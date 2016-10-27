@@ -64,26 +64,32 @@ app.post('/api/actuate', function(req, res, next) {
       if(ACTUATOR_IDs[actuator_id] == 'startCleaning') {
         robot.startCleaning()
         res.send("OK");
+        return;
      }
       if(ACTUATOR_IDs[actuator_id] == 'startSpotCleaning') {
         robot.startSpotCleaning()
         res.send("OK");
+        return;
       }
       if(ACTUATOR_IDs[actuator_id] == 'pauseCleaning') {
         robot.pauseCleaning()
         res.send("OK");
+        return;
       }
       if(ACTUATOR_IDs[actuator_id] == 'resumeCleaning') {
         robot.resumeCleaning();
         res.send("OK");
+        return;
       }
       if(ACTUATOR_IDs[actuator_id] == 'startCleaning') {
         robot.startCleaning();
         res.send("OK");
+        return;
       }
       if(ACTUATOR_IDs[actuator_id] == 'sendToBase') {
         robot.sendToBase();
         res.send("OK");
+        return;
       }
       
       res.send("Unsupported actuator");
@@ -98,7 +104,7 @@ app.get("/api/lastReading", function (req, res, next) {
 
 function updateSensors() {
   var data = [];
-  robots.getState((err,data)=>{
+  robot.getState((err)=>{
     data.push({name:'charge',val:robot.charge});
     data.push({name:'isCharging',val:robot.isCharging});
     data.push({name:'isDocked',val:robot.isDocked});
@@ -114,7 +120,7 @@ function updateSensors() {
 
   });
 
-
+  console.log(data);
   lastReading = data;
 }
 
@@ -142,6 +148,7 @@ databox_directory.register_driver('Neato','databox-driver-neato', 'A Databox dri
       databox_directory.register_sensor_type('isDocked'),
       databox_directory.register_sensor_type('canStart'),
       databox_directory.register_sensor_type('canStop'),
+      databox_directory.register_sensor_type('canPause'),
       databox_directory.register_sensor_type('canResume'),
       databox_directory.register_sensor_type('canGoToBase'),
     ]
@@ -150,18 +157,19 @@ databox_directory.register_driver('Neato','databox-driver-neato', 'A Databox dri
   .then((sensorTypeIds)=>{
     console.log('sensorTypeIds::', sensorTypeIds);
     SENSOR_TYPE_IDs = sensorTypeIds;
-    return Promise.resolve(PLUGS)
+    return Promise.resolve()
   }) 
-  .then ((plugs) => {
+  .then (() => {
     
     proms = [
         databox_directory.register_sensor(DRIVER_ID, SENSOR_TYPE_IDs[0].id, DATASTORE_ID, VENDOR_ID, 'botvac', '%', '%', 'Battery charge %', ''),
         databox_directory.register_sensor(DRIVER_ID, SENSOR_TYPE_IDs[1].id, DATASTORE_ID, VENDOR_ID, 'botvac', 'Bool', '', 'is it charging?', ''),
-        databox_directory.register_sensor(DRIVER_ID, SENSOR_TYPE_IDs[2].id, DATASTORE_ID, VENDOR_ID, 'botvac', 'Bool', 'A', 'is it docked?', ''),
+        databox_directory.register_sensor(DRIVER_ID, SENSOR_TYPE_IDs[2].id, DATASTORE_ID, VENDOR_ID, 'botvac', 'Bool', '', 'is it docked?', ''),
         databox_directory.register_sensor(DRIVER_ID, SENSOR_TYPE_IDs[3].id, DATASTORE_ID, VENDOR_ID, 'botvac', 'Bool', '', 'can it start cleaning?', ''),
         databox_directory.register_sensor(DRIVER_ID, SENSOR_TYPE_IDs[4].id, DATASTORE_ID, VENDOR_ID, 'botvac', 'Bool', '', 'can it stop cleaning?', ''),
-        databox_directory.register_sensor(DRIVER_ID, SENSOR_TYPE_IDs[5].id, DATASTORE_ID, VENDOR_ID, 'botvac', 'Bool', '', 'can it resume cleaning?', ''),
-        databox_directory.register_sensor(DRIVER_ID, SENSOR_TYPE_IDs[6].id, DATASTORE_ID, VENDOR_ID, 'botvac', 'Bool', '', 'can it go back to base?', '')
+        databox_directory.register_sensor(DRIVER_ID, SENSOR_TYPE_IDs[5].id, DATASTORE_ID, VENDOR_ID, 'botvac', 'Bool', '', 'can it pause cleaning?', ''),
+        databox_directory.register_sensor(DRIVER_ID, SENSOR_TYPE_IDs[6].id, DATASTORE_ID, VENDOR_ID, 'botvac', 'Bool', '', 'can it resume cleaning?', ''),
+        databox_directory.register_sensor(DRIVER_ID, SENSOR_TYPE_IDs[7].id, DATASTORE_ID, VENDOR_ID, 'botvac', 'Bool', '', 'can it go back to base?', '')
     ];
     return Promise.all(proms);
   })
@@ -173,25 +181,28 @@ databox_directory.register_driver('Neato','databox-driver-neato', 'A Databox dri
       SENSOR_IDs.isDocked = sensorIds[2].id;
       SENSOR_IDs.canStart = sensorIds[3].id;
       SENSOR_IDs.canStop = sensorIds[4].id;
-      SENSOR_IDs.canResume = sensorIds[5].id;
-      SENSOR_IDs.canGoToBase = sensorIds[6].id;
+      SENSOR_IDs.canPause = sensorIds[5].id;
+      SENSOR_IDs.canResume = sensorIds[6].id;
+      SENSOR_IDs.canGoToBase = sensorIds[7].id;
 
+      console.log("SENSOR_IDs", SENSOR_IDs);
   })
   .then(()=>{
       var proms = []
       var actuators = ['startCleaning','startSpotCleaning','stopCleaning','pauseCleaning','resumeCleaning','sendToBase']
-      for(atype in actuators) {
+      for(var atype of actuators) {
         proms.push(
           new Promise((resolve, reject) => {
-            databox_directory.register_actuator_type(atype, function(result) {
+            var actuator_type = atype;
+            databox_directory.register_actuator_type(actuator_type, function(result) {
                 var id = result.id;
-                databox_directory.register_actuator( DRIVER_ID, id, DATASTORE_ID, VENDOR_ID, 1, atype, 'home', function (err,data) { 
+                databox_directory.register_actuator( DRIVER_ID, id, DATASTORE_ID, VENDOR_ID, 1, actuator_type, 'home', function (err,data) { 
                   if(err) { 
-                    console.log("[ERROR]", err, DRIVER_ID, on_id,DATASTORE_ID,VENDOR_ID , atype)
+                    console.log("[ERROR]", err, DRIVER_ID, on_id,DATASTORE_ID,VENDOR_ID , actuator_type)
                     reject(err);
                     return;
                   }
-                  ACTUATOR_IDs[atype] = result.id;
+                  ACTUATOR_IDs[result.id] = actuator_type;
                   resolve(result.id);
                 });
             })
@@ -202,7 +213,7 @@ databox_directory.register_driver('Neato','databox-driver-neato', 'A Databox dri
       return Promise.all(proms);
   })
   .then(() => {
-    console.log("PLUGS", PLUGS);
+    console.log("DONE");
   })
   .catch((err) => {
     console.log(err)

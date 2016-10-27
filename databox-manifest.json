@@ -1,25 +1,25 @@
 {
   "manifest-version": 1,
 
-  "name": "databox-driver-tplink-hs100",
+  "name": "databox-driver-neato",
   "version": "0.1.0",
 
-  "description": "A simple Databox driver for the TP-LINK HS100 smart plug",
+  "description": "A simple Databox driver for the botvac",
   "author": "Anthony Brown <Anthony.Brown@nottingham.ac.uk> ()",
   "license": "MIT",
 
 	"databox-type":"driver",
 
   "tags": [
-    "plug",
-    "smart",
-    "energy"
+    "neato",
+    "botvac",
+    "vacume"
   ],
 
-  "homepage": "https://github.com/me-box/databox-driver-tplink-hs100",
+  "homepage": "https://github.com/me-box/databox-driver-neato",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/me-box/databox-driver-tplink-hs100.git"
+    "url": "git+https://github.com/me-box/databox-driver-neato.git"
   },
 
   "network-permissions": [
@@ -29,6 +29,6 @@
   ],
 
   "resource-requirements": {
-    "store":"datastore-timeseries"
+    "store":"databox-store-blob"
   }
 }

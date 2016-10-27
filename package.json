@@ -1,7 +1,7 @@
 {
   "name": "databox-driver-neato",
   "version": "1.0.0",
-  "description": "A Databox driver for the TP-LINK HS100 smart plug",
+  "description": "A Databox driver for the botvac",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha",
     "start": "node ./src/main.js",
