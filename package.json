@@ -1,0 +1,48 @@
+{
+  "name": "databox-driver-neato",
+  "version": "1.0.0",
+  "description": "A Databox driver for the TP-LINK HS100 smart plug",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha",
+    "start": "node ./src/main.js",
+    "build": "docker build -t databox/databox-driver-neato .",
+    "deploy": "docker tag databox/databox-driver-neato registry.upintheclouds.org/databox-driver-neato && docker push registry.upintheclouds.org/databox-driver-neato",
+    "build-arm": "docker build -f Dockerfile-arm -t databox/databox-driver-neato-arm .",
+    "deploy-arm": "docker tag databox/databox-driver-neato-arm registry.upintheclouds.org/databox-driver-neato-arm && docker push registry.upintheclouds.org/databox-driver-neato-arm",
+    "clean": "node ./node_modules/modclean/bin/modclean.js -p ./node_modules/ -r",
+    "getshell": "docker exec -i -t databox-driver-neato /bin/bash",
+    "kill": "docker kill databox-driver-neato",
+    "attach": "docker attach databox-driver-neato",
+    "shell": "docker run -i -t databox/databox-driver-neato /bin/bash",
+    "local": "docker run -i -t databox/databox-driver-neato"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Toshbrown/databox-driver-neato.git"
+  },
+  "keywords": [
+    "Databox",
+    "Neato",
+    "Botvac"
+  ],
+  "author": "Anthony Brown",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Toshbrown/databox-driver-neato/issues"
+  },
+  "homepage": "https://github.com/Toshbrown/databox-driver-neato#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "express-session": "^1.14.1",
+    "modclean": "",
+    "node-botvac": "^0.1.4",
+    "promise": "^7.1.1",
+    "request": "^2.75.0"
+  },
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "mocha": "^3.1.2",
+    "supertest": "^2.0.0"
+  }
+}

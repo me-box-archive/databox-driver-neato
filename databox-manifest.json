@@ -1,0 +1,34 @@
+{
+  "manifest-version": 1,
+
+  "name": "databox-driver-tplink-hs100",
+  "version": "0.1.0",
+
+  "description": "A simple Databox driver for the TP-LINK HS100 smart plug",
+  "author": "Anthony Brown <Anthony.Brown@nottingham.ac.uk> ()",
+  "license": "MIT",
+
+	"databox-type":"driver",
+
+  "tags": [
+    "plug",
+    "smart",
+    "energy"
+  ],
+
+  "homepage": "https://github.com/me-box/databox-driver-tplink-hs100",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/me-box/databox-driver-tplink-hs100.git"
+  },
+
+  "network-permissions": [
+  ],
+  
+  "hardware-permissions": [
+  ],
+
+  "resource-requirements": {
+    "store":"datastore-timeseries"
+  }
+}
